@@ -27,7 +27,5 @@ Homestead.yaml
 Thumbs.db
 
 # Dokumen bisnis internal - jangan di-commit ke repo
-/Draft_Penawaran_CV_Amanda.md
-/Penawaran_CV_Amanda.pdf
-/penawaran.html
+/Docs/
 /audit.md
