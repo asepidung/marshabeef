@@ -1,6 +1,5 @@
-const CACHE_NAME = 'marsha-beef-v3';
+const CACHE_NAME = 'marsha-beef-v4';
 const urlsToCache = [
-  '/',
   '/img/logo.png',
   '/img/halal.png',
   '/manifest.json',
@@ -35,6 +34,8 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
+  // Halaman HTML bersifat dinamis (flash session, auto-print) - jangan pernah dari cache
+  if (event.request.mode === 'navigate') return;
   event.respondWith(
     fetch(event.request)
       .then(response => {

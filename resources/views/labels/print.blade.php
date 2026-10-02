@@ -49,8 +49,8 @@
             white-space: nowrap;
         }
         .header-top { font-size: 10px; font-weight: normal; }
-        .header-company { font-size: 11px; font-weight: normal; letter-spacing: 0px; margin-left: 2px; }
-        .address { font-size: 8px; line-height: 1; margin-top: 1px; font-weight: normal; }
+        .header-company { font-size: 12px; font-weight: bold; letter-spacing: 0.2px; margin-left: 3px; }
+        .address { font-size: 7.5px; line-height: 1; margin-top: 2px; font-weight: normal; white-space: nowrap; }
 
         /* Product Title Block */
         .product-title {
@@ -72,6 +72,7 @@
         .info-grid {
             display: flex;
             flex: 1;
+            min-height: 0;
             border: 2px solid #000;
             border-radius: 4px;
             margin-bottom: 3px;
@@ -117,15 +118,34 @@
         .halal-box {
             flex: 1;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            padding: 4px;
+            padding: 4px 3px 3px;
+            gap: 3px;
+            min-width: 0;
+        }
+        .halal-logo {
+            flex: 1;
+            min-height: 0;
+            width: 100%;
+            position: relative;
         }
         .halal-img {
-            max-width: 35mm;
-            max-height: 22mm;
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
             object-fit: contain;
         }
+        .nkv {
+            width: 100%;
+            border-top: 1.5px solid #000;
+            padding-top: 2px;
+            text-align: center;
+            line-height: 1.1;
+        }
+        .nkv-label { font-size: 7px; font-weight: bold; letter-spacing: 1.5px; }
+        .nkv-number { font-size: 9px; font-weight: 900; letter-spacing: 0.2px; white-space: nowrap; }
 
         /* Type Bar */
         .type-bar {
@@ -164,7 +184,7 @@
                 <span class="header-top">Prod :</span>
                 <span class="header-company">PT. BERKAH MARSHA SEJAHTERA</span>
             </div>
-            <div class="address">Murnisari, Kec. Mande, Kabupaten Cianjur, Jawa Barat 43292</div>
+            <div class="address">Jl. Raya Tapos RT. 01/03, Kel. Tapos, Kec. Tapos, Kota Depok, Jawa Barat</div>
         </div>
         
         <!-- Product Title Block -->
@@ -198,7 +218,13 @@
             </div>
             
             <div class="halal-box">
-                <img src="{{ asset('img/halal.png') }}" class="halal-img" alt="Halal">
+                <div class="halal-logo">
+                    <img src="{{ asset('img/halal.png') }}" class="halal-img" alt="Halal">
+                </div>
+                <div class="nkv">
+                    <div class="nkv-label">NKV</div>
+                    <div class="nkv-number">RPH-3276041-016</div>
+                </div>
             </div>
         </div>
         
