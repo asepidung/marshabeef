@@ -87,19 +87,23 @@
             flex-direction: column;
             padding: 2px 4px;
         }
-        .pcs-absolute { 
-            position: absolute; 
-            top: 2px; 
-            right: 4px; 
-            font-size: 16px; 
-            font-weight: 900; 
-        }
-        .weight-value { display: flex; align-items: baseline; margin-top: 10px; }
+        .weight-block { margin: auto 0; }
+        .weight-caption { font-size: 8px; font-weight: bold; letter-spacing: 1.5px; margin-bottom: 1px; }
+        .weight-value { display: flex; align-items: baseline; }
         .weight-num { font-size: 40px; font-weight: 900; letter-spacing: -1px; line-height: 1; }
         .weight-unit { font-size: 14px; font-weight: bold; margin-left: 2px; }
+        .pcs-badge {
+            margin-left: auto;
+            align-self: center;
+            border: 2px solid #000;
+            border-radius: 4px;
+            padding: 1px 6px;
+            font-size: 14px;
+            font-weight: 900;
+            white-space: nowrap;
+        }
 
         .dates-area {
-            margin-top: auto; /* Mentokin ke garis bawah */
             display: flex;
             flex-direction: column;
             font-size: 11px;
@@ -195,12 +199,15 @@
         <!-- Info Grid (Weight, Pcs, Dates) -->
         <div class="info-grid">
             <div class="main-box">
-                @if($label->qty_pcs > 0)
-                <div class="pcs-absolute">{{ $label->qty_pcs }}-Pcs</div>
-                @endif
-                <div class="weight-value">
-                    <span class="weight-num">{{ number_format($label->weight, 2) }}</span>
-                    <span class="weight-unit">Kg</span>
+                <div class="weight-block">
+                    <div class="weight-caption">NET WEIGHT</div>
+                    <div class="weight-value">
+                        <span class="weight-num">{{ number_format($label->weight, 2) }}</span>
+                        <span class="weight-unit">Kg</span>
+                        @if($label->qty_pcs > 0)
+                        <span class="pcs-badge">{{ $label->qty_pcs }} PCS</span>
+                        @endif
+                    </div>
                 </div>
                 
                 <div class="dates-area">
