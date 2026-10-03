@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\PinSession;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,10 +15,21 @@ class RequirePin
             return $next($request);
         }
 
-        if ($request->session()->get('pin_ok') === true) {
+        $session = $request->session();
+
+        if (PinSession::active($session)) {
+            PinSession::touch($session);
+
             return $next($request);
         }
 
-        return redirect()->guest(route('login'));
+        $wasLoggedIn = $session->get('pin_ok') === true;
+        PinSession::end($session);
+
+        $redirect = redirect()->route('login');
+
+        return $wasLoggedIn
+            ? $redirect->with('status', 'Sesi berakhir karena tidak ada aktivitas. Masukkan PIN kembali.')
+            : $redirect;
     }
 }

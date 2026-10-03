@@ -14,7 +14,7 @@
         
         <form action="{{ route('types.store') }}" method="POST" class="w-full md:w-auto flex flex-col sm:flex-row gap-3 items-center">
             @csrf
-            <input type="text" name="name" placeholder="Nama Suhu (cth: CHILL)" required class="glass-input rounded-full px-5 py-2.5 text-sm focus:outline-none w-full sm:w-56 transition-all tracking-wide">
+            <input type="text" name="name" placeholder="Nama Suhu (cth: CHILL)" required data-uppercase autocapitalize="characters" style="text-transform: uppercase" class="glass-input rounded-full px-5 py-2.5 text-sm focus:outline-none w-full sm:w-56 transition-all tracking-wide">
             
             <div class="relative w-full sm:w-40 shrink-0">
                 <input type="number" name="expired_in_days" placeholder="Lama Simpan" min="1" max="999" required class="glass-input rounded-full pl-5 pr-14 py-2.5 text-sm focus:outline-none w-full transition-all">
@@ -62,7 +62,7 @@
                             <!-- Tampilan Biasa -->
                             <span x-show="!editing" class="font-bold text-base text-white drop-shadow-sm tracking-widest uppercase">{{ $type->name }}</span>
                             <!-- Form Edit -->
-                            <input x-show="editing" type="text" x-model="editName" form="edit-form-{{ $type->id }}" name="name" class="glass-input rounded-full px-4 py-1.5 text-sm w-full sm:w-48 font-bold tracking-widest uppercase" required x-cloak>
+                            <input x-show="editing" type="text" x-model="editName" form="edit-form-{{ $type->id }}" name="name" data-uppercase autocapitalize="characters" class="glass-input rounded-full px-4 py-1.5 text-sm w-full sm:w-48 font-bold tracking-widest uppercase" required x-cloak>
                         </td>
                         <td class="px-6 py-4">
                             <!-- Tampilan Biasa -->

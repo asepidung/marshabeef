@@ -108,7 +108,12 @@
         }
     </style>
 </head>
-<body class="antialiased min-h-screen flex flex-col relative">
+<body class="antialiased min-h-screen flex flex-col relative"
+      @if(config('access.pin'))
+      data-idle-minutes="{{ config('access.idle_minutes') }}"
+      data-lock-url="{{ route('lock') }}"
+      data-keepalive-url="{{ route('keepalive') }}"
+      @endif>
     
     <!-- Floating Toast Notification -->
     @if(session('success') || session('success_del'))
@@ -141,7 +146,6 @@
                     </a>
                 </div>
                 
-                @unless(View::hasSection('hide_nav'))
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-baseline space-x-2">
                     <a href="{{ route('labels.create') }}" class="text-white hover:bg-white/20 px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300">Cetak Label</a>
@@ -164,11 +168,9 @@
                         </svg>
                     </button>
                 </div>
-                @endunless
             </div>
         </div>
 
-        @unless(View::hasSection('hide_nav'))
         <!-- Mobile Menu -->
         <div x-show="mobileMenuOpen" class="md:hidden bg-[#0f172a]/95 backdrop-blur-xl border-t border-white/10" style="display: none;" x-transition>
             <div class="px-4 pt-2 pb-4 space-y-2 shadow-xl">
@@ -183,7 +185,6 @@
                 @endif
             </div>
         </div>
-        @endunless
     </nav>
     
     <main class="grow w-full max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">

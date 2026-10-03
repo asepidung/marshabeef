@@ -20,8 +20,13 @@ pemilik. Filament, Livewire, dan Laravel Boost sudah diputuskan **tidak dipakai*
 
 ## Arsitektur
 
-- `routes/web.php`: `/` (video, publik), `/login`, dan semua rute lain di balik middleware `pin`
-  (`RequirePin`, PIN dari `APP_PIN`; kosong di production = aplikasi terkunci).
+- `routes/web.php`: `/` adalah dashboard (video + form PIN, `PinController@show`), dan semua rute lain
+  di balik middleware `pin` (`RequirePin`, PIN dari `APP_PIN`; kosong di production = aplikasi terkunci).
+  PIN benar selalu menuju `/labels/create`. Kunci otomatis setelah `APP_IDLE_MINUTES` tanpa aktivitas:
+  server memeriksa lewat `PinSession`, browser lewat `resources/js/idle-lock.js` (`/keepalive`, `/lock`).
+- Nama barang dan nama suhu dipaksa huruf besar: `data-uppercase` di input (`resources/js/uppercase.js`)
+  dan `mb_strtoupper` di controller **sebelum** validasi unique.
+- `phpunit.xml` mengosongkan `APP_PIN` agar tes tidak terpengaruh isi `.env` lokal.
 - `LabelController::store` memakai `App\Support\LabelBarcode` (parsing berat dan pembentukan barcode).
   Barcode **23 digit tetap** (format di README). Jangan mengubah format tanpa memperbarui tes dan README.
 - Nomor urut reset per `production_date`, dihitung dengan `withTrashed()` di dalam `DB::transaction`,

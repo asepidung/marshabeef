@@ -65,6 +65,9 @@ di-install lewat `localhost` atau HTTPS, bukan lewat alamat IP biasa.
 | `PP` | Jumlah pcs | 0–99 |
 | `NNNN` | Nomor urut, **reset setiap hari produksi** | 1–9999 per hari |
 
+Nama barang dan nama suhu **selalu huruf besar**: otomatis diubah saat mengetik, dan dipaksa lagi di
+server (sehingga `striploin` dan `STRIPLOIN` dianggap duplikat).
+
 Input berat di form: `22.35` atau `22,35` (koma dibaca sebagai desimal), atau dengan jumlah pcs
 `22.35/6`. Maksimal 2 desimal. Input di luar batas ditolak dengan pesan, tidak pernah dibulatkan diam-diam.
 
@@ -90,8 +93,11 @@ Untuk memulihkan: hentikan aplikasi, salin file backup ke `database/database.sql
 
 ## Keamanan
 
-- Semua halaman (kecuali halaman depan dan `/login`) memerlukan PIN dari `APP_PIN`. Percobaan login
-  dibatasi 5 kali per menit.
+- PIN dimasukkan di **halaman depan (dashboard)**. Setelah PIN benar, operator langsung masuk ke halaman
+  Cetak Label. Semua halaman lain memerlukan PIN dari `APP_PIN`.
+- **Kunci otomatis:** jika tidak ada klik, sentuhan, atau keyboard selama `APP_IDLE_MINUTES` (bawaan 30
+  menit), aplikasi kembali ke dashboard dan meminta PIN lagi. Dicek di browser dan juga di server.
+- Percobaan PIN dibatasi 5 kali per menit per komputer.
 - Folder `database/` berada di luar `public/`, jadi file database tidak bisa diunduh lewat web **selama
   document root web server diarahkan ke folder `public`** (otomatis jika memakai `php artisan serve`).
 - PIN ini cukup untuk pemakaian lokal di satu PC. **Sebelum dinaikkan online** ganti dengan login

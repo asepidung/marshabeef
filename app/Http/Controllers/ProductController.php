@@ -17,6 +17,9 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        // Huruf besar dipaksa sebelum validasi agar cek duplikat tidak lolos karena beda huruf.
+        $request->merge(['name' => mb_strtoupper(trim((string) $request->input('name')))]);
+
         $request->validate([
             'name' => 'required|string|max:255|unique:products,name',
         ], [

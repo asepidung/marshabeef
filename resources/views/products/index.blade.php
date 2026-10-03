@@ -23,7 +23,7 @@
                     <label class="block text-white/90 text-sm font-semibold mb-2 uppercase tracking-wide text-xs" for="name">
                         Nama Barang
                     </label>
-                    <input class="glass-input rounded-xl w-full py-3 px-4 text-white leading-tight" id="name" name="name" type="text" placeholder="Misal: DAGING SAPI" required autocomplete="off">
+                    <input class="glass-input rounded-xl w-full py-3 px-4 text-white leading-tight" id="name" name="name" type="text" placeholder="Misal: DAGING SAPI" required autocomplete="off" data-uppercase autocapitalize="characters" style="text-transform: uppercase">
                     <p class="text-xs text-white/60 mt-3 font-light">Kode barang akan terisi otomatis (Mulai dari 1001).</p>
                 </div>
                 

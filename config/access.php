@@ -8,4 +8,9 @@ return [
     */
     'pin' => env('APP_PIN'),
 
+    /*
+    | Menit tanpa aktivitas (klik/keyboard) sebelum aplikasi kembali ke dashboard dan minta PIN lagi.
+    */
+    'idle_minutes' => (int) env('APP_IDLE_MINUTES', 30),
+
 ];

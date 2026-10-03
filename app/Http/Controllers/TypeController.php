@@ -19,6 +19,8 @@ class TypeController extends Controller
 
     public function store(Request $request)
     {
+        $request->merge(['name' => mb_strtoupper(trim((string) $request->input('name')))]);
+
         $request->validate([
             'name' => 'required|string|max:255|unique:types,name',
             'expired_in_days' => 'required|integer|min:1|max:999',
@@ -49,6 +51,8 @@ class TypeController extends Controller
 
     public function update(Request $request, Type $type)
     {
+        $request->merge(['name' => mb_strtoupper(trim((string) $request->input('name')))]);
+
         $request->validate([
             'name' => 'required|string|max:255|unique:types,name,'.$type->id,
             'expired_in_days' => 'required|integer|min:1|max:999',

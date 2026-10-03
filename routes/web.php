@@ -6,14 +6,14 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TypeController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/login', [PinController::class, 'show'])->name('login');
-Route::post('/login', [PinController::class, 'login'])->middleware('throttle:5,1')->name('login.attempt');
+// Dashboard: video + PIN. Setelah PIN benar langsung ke halaman cetak label.
+Route::get('/', [PinController::class, 'show'])->name('login');
+Route::get('/login', fn () => redirect()->route('login'));
+Route::post('/login', [PinController::class, 'login'])->name('login.attempt');
+Route::get('/lock', [PinController::class, 'lock'])->name('lock');
 
 Route::middleware('pin')->group(function () {
+    Route::get('/keepalive', [PinController::class, 'keepalive'])->name('keepalive');
     Route::post('/logout', [PinController::class, 'logout'])->name('logout');
 
     Route::resource('products', ProductController::class);
