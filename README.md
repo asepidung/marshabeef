@@ -1,58 +1,121 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Marsha Beef – Aplikasi Cetak Label
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi cetak label produk daging untuk PT Berkah Marsha Sejahtera. Dibangun dengan Laravel 13 dan
+SQLite, bisa berjalan **100% offline** di satu PC (semua aset sudah dibundel lokal), dan bisa dinaikkan
+online nanti.
 
-## About Laravel
+Fitur: master barang, master suhu (CHILL/FROZEN + lama simpan), cetak label 100×75 mm lengkap dengan
+barcode CODE128, riwayat cetak, PIN akses, dan PWA (bisa di-install dari Chrome/Edge).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Kebutuhan
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- PHP 8.3 atau lebih baru dengan ekstensi `pdo_sqlite`, `sqlite3`, `mbstring`, `gd` (Laragon sudah lengkap)
+- Composer (hanya untuk instalasi pertama)
+- Node.js **tidak diperlukan** untuk menjalankan aplikasi. Hasil build aset sudah ada di `public/build`.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Instalasi di PC pabrik
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer install --no-dev --optimize-autoloader
+copy .env.example .env
+php artisan key:generate
+php artisan migrate --force
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+File database `database/database.sqlite` dibuat otomatis oleh perintah `migrate`.
 
-## Contributing
+Lalu buka file `.env` dan isi:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| Variabel | Isi |
+|---|---|
+| `APP_PIN` | PIN yang dipakai operator (angka, misalnya 6 digit). **Wajib**, tanpa ini aplikasi terkunci |
+| `APP_ENV` | `production` (sudah bawaan) |
+| `APP_DEBUG` | `false` (sudah bawaan) |
 
-## Code of Conduct
+Jika PC pabrik tidak punya internet saat instalasi, jalankan `composer install` di PC lain lalu salin
+seluruh folder proyek (termasuk `vendor`) ke PC pabrik.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Menjalankan
 
-## Security Vulnerabilities
+```bash
+php artisan serve --host=127.0.0.1 --port=8000
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Buka `http://127.0.0.1:8000`. Agar otomatis menyala saat PC hidup, buat shortcut/Task Scheduler yang
+menjalankan perintah di atas dari folder proyek. Di Chrome atau Edge, klik ikon **Install** di address bar
+untuk memasangnya sebagai aplikasi.
 
-## License
+Jika perlu diakses dari PC lain di jaringan kantor, ganti `--host=0.0.0.0`. Catatan: PWA hanya bisa
+di-install lewat `localhost` atau HTTPS, bukan lewat alamat IP biasa.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Format barcode (23 digit, tetap)
+
+```
+1 | yymmdd | KKKK | S | BBBBB | PP | NNNN
+```
+
+| Bagian | Arti | Batas |
+|---|---|---|
+| `1` | Awalan tetap | |
+| `yymmdd` | Tanggal produksi | |
+| `KKKK` | Kode barang | 1001–9999 |
+| `S` | ID jenis suhu | 1–9 (maksimal 9 jenis suhu) |
+| `BBBBB` | Berat dalam gram/10 (berat × 100) | 0,01–999,99 kg |
+| `PP` | Jumlah pcs | 0–99 |
+| `NNNN` | Nomor urut, **reset setiap hari produksi** | 1–9999 per hari |
+
+Input berat di form: `22.35` atau `22,35` (koma dibaca sebagai desimal), atau dengan jumlah pcs
+`22.35/6`. Maksimal 2 desimal. Input di luar batas ditolak dengan pesan, tidak pernah dibulatkan diam-diam.
+
+Nomor urut label yang sudah dihapus tidak dipakai ulang.
+
+## Backup database
+
+Seluruh data ada di satu file: `database/database.sqlite`. Jangan disalin langsung saat aplikasi jalan,
+pakai perintah ini (aman walau aplikasi sedang dipakai):
+
+```bash
+php artisan app:backup-db --dir=E:\BackupMarsha --keep=30
+```
+
+`--dir` opsional (bawaan `storage/app/backups`), `--keep` jumlah backup terbaru yang disimpan.
+Untuk backup harian otomatis di Windows (setiap hari 23:00):
+
+```bash
+schtasks /Create /SC DAILY /ST 23:00 /TN "Backup Marsha Beef" /TR "cmd /c cd /d D:\path\ke\marshabeef && php artisan app:backup-db --dir=E:\BackupMarsha"
+```
+
+Untuk memulihkan: hentikan aplikasi, salin file backup ke `database/database.sqlite`, jalankan lagi.
+
+## Keamanan
+
+- Semua halaman (kecuali halaman depan dan `/login`) memerlukan PIN dari `APP_PIN`. Percobaan login
+  dibatasi 5 kali per menit.
+- Folder `database/` berada di luar `public/`, jadi file database tidak bisa diunduh lewat web **selama
+  document root web server diarahkan ke folder `public`** (otomatis jika memakai `php artisan serve`).
+- PIN ini cukup untuk pemakaian lokal di satu PC. **Sebelum dinaikkan online** ganti dengan login
+  pengguna sungguhan, aktifkan HTTPS, dan pertimbangkan MySQL/PostgreSQL.
+
+## Naik ke online (checklist)
+
+1. Hosting dengan HTTPS, document root ke `public/`.
+2. `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL` sesuai domain, `APP_PIN` terisi.
+3. Ganti PIN dengan autentikasi pengguna (nama + kata sandi) dan batasi siapa yang boleh menghapus data.
+4. Pindahkan database ke MySQL/PostgreSQL jika banyak pengguna bersamaan, atur backup dari penyedia hosting.
+5. Jalankan `php artisan config:cache route:cache view:cache`.
+
+## Pengembangan
+
+```bash
+composer install
+npm install
+copy .env.example .env   # lalu ubah APP_ENV=local dan APP_DEBUG=true
+php artisan key:generate
+php artisan migrate
+npm run dev              # atau npm run build
+php artisan serve
+php artisan test
+```
+
+Setelah mengubah CSS/JS atau class Tailwind di view, jalankan `npm run build` dan commit isi
+`public/build` karena PC pabrik tidak memakai Node.
