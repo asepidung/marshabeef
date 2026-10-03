@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\LabelController;
 use App\Http\Controllers\PinController;
+use App\Http\Controllers\PinSettingsController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TypeController;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +16,9 @@ Route::get('/lock', [PinController::class, 'lock'])->name('lock');
 Route::middleware('pin')->group(function () {
     Route::get('/keepalive', [PinController::class, 'keepalive'])->name('keepalive');
     Route::post('/logout', [PinController::class, 'logout'])->name('logout');
+
+    Route::get('/pin', [PinSettingsController::class, 'edit'])->name('pin.edit');
+    Route::post('/pin', [PinSettingsController::class, 'update'])->name('pin.update');
 
     Route::resource('products', ProductController::class);
     Route::patch('products/{product}/toggle', [ProductController::class, 'toggleActive'])->name('products.toggle');

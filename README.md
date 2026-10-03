@@ -36,7 +36,7 @@ cukup membaca `BACA-DULU.txt` di dalamnya:
 | `Mulai.bat` | Menyalakan server di latar belakang lalu membuka aplikasi di browser |
 | `Aktifkan-AutoStart.bat` | Sekali klik: server menyala otomatis saat laptop dinyalakan, plus ikon di Desktop |
 | `Matikan-AutoStart.bat` | Membatalkan autostart |
-| `Ganti-PIN.bat` | Mengganti PIN (langsung berlaku) |
+| `Reset-PIN-Darurat.bat` | Hanya untuk pemilik bila PIN lupa: mengembalikan PIN ke PIN awal (`APP_PIN`) |
 | `Hentikan.bat` | Mematikan server (hanya milik paket ini) |
 
 Catatan:
@@ -130,6 +130,17 @@ Untuk memulihkan: hentikan aplikasi, salin file backup ke `database/database.sql
 - **Kunci otomatis:** jika tidak ada klik, sentuhan, atau keyboard selama `APP_IDLE_MINUTES` (bawaan 30
   menit), aplikasi kembali ke dashboard dan meminta PIN lagi. Dicek di browser dan juga di server.
 - Percobaan PIN dibatasi 5 kali per menit per komputer.
+- **PIN diganti lewat menu "Ganti PIN"** di aplikasi (wajib memasukkan PIN saat ini). PIN baru disimpan
+  sebagai hash di database, bukan teks biasa, dan mengalahkan `APP_PIN` di `.env` (yang hanya PIN awal).
+  Jika PIN lupa, pemilik menjalankan `Reset-PIN-Darurat.bat` (di paket) atau
+  `php artisan app:reset-pin` (kembali ke `APP_PIN`) atau `php artisan app:reset-pin 482913` (PIN tertentu).
+
+## Memperbarui aplikasi di laptop yang sudah dipakai
+
+Buat paket baru, lalu di laptop tujuan salin isinya **kecuali dua hal ini**, supaya data dan PIN tidak hilang:
+`database\database.sqlite` dan `.env`. `Mulai.bat` otomatis menerapkan perubahan struktur database saat
+dijalankan (`php artisan migrate --force`), jadi tidak ada langkah tambahan. Disarankan membuat backup
+database dulu.
 - Folder `database/` berada di luar `public/`, jadi file database tidak bisa diunduh lewat web **selama
   document root web server diarahkan ke folder `public`** (otomatis jika memakai `php artisan serve`).
 - PIN ini cukup untuk pemakaian lokal di satu PC. **Sebelum dinaikkan online** ganti dengan login

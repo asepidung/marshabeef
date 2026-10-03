@@ -21,13 +21,20 @@ Setelah itu server menyala sendiri di latar belakang setiap kali laptop
 dinyalakan dan masuk ke Windows. Operator cukup klik ikon "Marsha Beef"
 di Desktop untuk membuka aplikasi.
 
+Jendela hasilnya menyebut lokasi ikon yang dibuat. Jika ikon "Marsha Beef" tidak
+muncul di Desktop, buat manual: klik kanan file Mulai.bat > Send to > Desktop
+(create shortcut). Server tetap menyala otomatis walau ikonnya dibuat manual.
+
 Untuk membatalkan: klik dua kali  Matikan-AutoStart.bat
 
 
 MENGGANTI PIN
 -------------
-Klik dua kali  Ganti-PIN.bat , lalu ikuti petunjuknya (PIN 4 sampai 12 angka).
-PIN baru langsung berlaku.
+Di dalam aplikasi, klik menu "Ganti PIN" di bagian atas. Masukkan PIN saat ini,
+lalu PIN baru dua kali (4 sampai 12 angka). PIN baru langsung berlaku.
+
+Jika PIN LUPA (khusus pemilik): klik dua kali  Reset-PIN-Darurat.bat . PIN akan
+kembali ke PIN awal. Setelah masuk, segera ganti lagi lewat menu "Ganti PIN".
 
 
 MENGHENTIKAN APLIKASI
@@ -83,6 +90,6 @@ JIKA BERMASALAH
   2. Pastikan alamatnya  http://127.0.0.1:8000
   3. Jika muncul pesan "port 8000 dipakai", ada aplikasi lain yang memakai
      port tersebut. Tutup aplikasi itu atau restart laptop.
-- Muncul tulisan "PIN belum diatur": buka Ganti-PIN.bat lalu isi PIN.
-- Lupa PIN: klik Ganti-PIN.bat (tidak perlu PIN lama).
+- Muncul tulisan "PIN belum diatur": hubungi pemilik/pengembang aplikasi.
+- Lupa PIN: pemilik klik Reset-PIN-Darurat.bat (lihat bagian MENGGANTI PIN).
 - Jam di riwayat tidak sesuai: periksa jam dan zona waktu Windows (WIB).

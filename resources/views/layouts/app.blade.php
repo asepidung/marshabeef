@@ -108,8 +108,9 @@
         }
     </style>
 </head>
+@php $pinEnabled = \App\Support\AccessPin::isConfigured(); @endphp
 <body class="antialiased min-h-screen flex flex-col relative"
-      @if(config('access.pin'))
+      @if($pinEnabled)
       data-idle-minutes="{{ config('access.idle_minutes') }}"
       data-lock-url="{{ route('lock') }}"
       data-keepalive-url="{{ route('keepalive') }}"
@@ -151,7 +152,8 @@
                     <a href="{{ route('labels.create') }}" class="text-white hover:bg-white/20 px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300">Cetak Label</a>
                     <a href="{{ route('products.index') }}" class="text-white hover:bg-white/20 px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300">Master Barang</a>
                     <a href="{{ route('types.index') }}" class="text-white hover:bg-white/20 px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300">Master Suhu</a>
-                    @if(config('access.pin'))
+                    @if($pinEnabled)
+                    <a href="{{ route('pin.edit') }}" class="text-white hover:bg-white/20 px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300">Ganti PIN</a>
                     <form action="{{ route('logout') }}" method="POST" class="inline">
                         @csrf
                         <button type="submit" class="text-white/70 hover:text-white hover:bg-white/20 px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300">Keluar</button>
@@ -177,7 +179,8 @@
                 <a href="{{ route('labels.create') }}" class="text-white block px-4 py-3 rounded-lg text-base font-medium bg-white/5 hover:bg-white/10 border border-white/5">Cetak Label</a>
                 <a href="{{ route('products.index') }}" class="text-white block px-4 py-3 rounded-lg text-base font-medium bg-white/5 hover:bg-white/10 border border-white/5">Master Barang</a>
                 <a href="{{ route('types.index') }}" class="text-white block px-4 py-3 rounded-lg text-base font-medium bg-white/5 hover:bg-white/10 border border-white/5">Master Suhu</a>
-                @if(config('access.pin'))
+                @if($pinEnabled)
+                <a href="{{ route('pin.edit') }}" class="text-white block px-4 py-3 rounded-lg text-base font-medium bg-white/5 hover:bg-white/10 border border-white/5">Ganti PIN</a>
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="text-white/70 block w-full text-left px-4 py-3 rounded-lg text-base font-medium bg-white/5 hover:bg-white/10 border border-white/5">Keluar</button>

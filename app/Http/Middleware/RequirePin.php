@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\AccessPin;
 use App\Support\PinSession;
 use Closure;
 use Illuminate\Http\Request;
@@ -11,7 +12,7 @@ class RequirePin
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if ((string) config('access.pin') === '' && ! app()->environment('production')) {
+        if (! AccessPin::isConfigured() && ! app()->environment('production')) {
             return $next($request);
         }
 

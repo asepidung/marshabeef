@@ -1,0 +1,17 @@
+@echo off
+cd /d "%~dp0"
+set "PHP=%~dp0php\php.exe"
+if not exist "%PHP%" set "PHP=php"
+
+echo RESET PIN DARURAT (untuk pemilik)
+echo.
+echo Gunakan ini HANYA jika PIN lupa dan tidak bisa masuk ke aplikasi.
+echo PIN akan dikembalikan ke PIN awal (yang tertulis di file .env pada baris APP_PIN).
+echo Setelah masuk, segera ganti PIN lewat menu "Ganti PIN" di aplikasi.
+echo.
+choice /c YN /m "Lanjutkan"
+if errorlevel 2 exit /b 0
+
+"%PHP%" artisan app:reset-pin
+echo.
+pause

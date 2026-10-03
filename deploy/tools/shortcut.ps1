@@ -10,41 +10,62 @@ $root = Split-Path -Parent $PSScriptRoot
 $startupDir = if ($env:MARSHA_STARTUP_DIR) { $env:MARSHA_STARTUP_DIR } else { Join-Path $env:APPDATA 'Microsoft\Windows\Start Menu\Programs\Startup' }
 $desktopDir = if ($env:MARSHA_DESKTOP_DIR) { $env:MARSHA_DESKTOP_DIR } else { [Environment]::GetFolderPath('Desktop') }
 
-$serverLink = Join-Path $startupDir 'Marsha Beef Server.lnk'
-$desktopLink = Join-Path $desktopDir 'Marsha Beef.lnk'
+$serverLink = [IO.Path]::Combine($startupDir, 'Marsha Beef Server.lnk')
+$desktopLink = [IO.Path]::Combine($desktopDir, 'Marsha Beef.lnk')
 
 if ($Action -eq 'Remove') {
     foreach ($link in @($serverLink, $desktopLink)) {
-        if (Test-Path $link) { Remove-Item -LiteralPath $link -Force }
+        if (Test-Path -LiteralPath $link) { [IO.File]::Delete($link) }
     }
     Write-Host 'AutoStart dimatikan. Server tidak lagi menyala otomatis saat laptop dinyalakan.'
     exit 0
 }
 
-New-Item -ItemType Directory -Path $startupDir -Force | Out-Null
 $shell = New-Object -ComObject WScript.Shell
 $target = Join-Path $root 'Mulai.bat'
 $icon = Join-Path $PSScriptRoot 'marsha.ico'
 
-# 1. Menyalakan server otomatis saat pengguna login ke Windows (tanpa membuka browser).
-$link = $shell.CreateShortcut($serverLink)
-$link.TargetPath = $target
-$link.Arguments = '/server'
-$link.WorkingDirectory = $root
-$link.WindowStyle = 7
-$link.IconLocation = $icon
-$link.Save()
+# Membuat shortcut lalu memastikan filenya benar-benar ada. Mengembalikan $null jika berhasil, atau pesan galat.
+function New-Link([string]$path, [string]$arguments) {
+    try {
+        $dir = Split-Path -Parent $path
+        if (-not (Test-Path -LiteralPath $dir)) { New-Item -ItemType Directory -Path $dir -Force -ErrorAction Stop | Out-Null }
 
-# 2. Ikon di Desktop untuk membuka aplikasi.
-if (Test-Path $desktopDir) {
-    $link = $shell.CreateShortcut($desktopLink)
-    $link.TargetPath = $target
-    $link.WorkingDirectory = $root
-    $link.WindowStyle = 7
-    $link.IconLocation = $icon
-    $link.Save()
+        $link = $shell.CreateShortcut($path)
+        $link.TargetPath = $target
+        $link.Arguments = $arguments
+        $link.WorkingDirectory = $root
+        $link.WindowStyle = 7
+        if (Test-Path -LiteralPath $icon) { $link.IconLocation = $icon }
+        $link.Save()
+
+        if (-not (Test-Path -LiteralPath $path)) { return 'file shortcut tidak terbentuk' }
+        return $null
+    } catch {
+        return $_.Exception.Message
+    }
 }
 
-Write-Host 'AutoStart aktif.'
-Write-Host ' - Server akan menyala otomatis setiap laptop dinyalakan dan pengguna masuk ke Windows.'
-Write-Host ' - Ikon "Marsha Beef" sudah dibuat di Desktop untuk membuka aplikasi.'
+$serverError = New-Link $serverLink '/server'
+$desktopError = New-Link $desktopLink ''
+
+Write-Host ''
+if ($serverError) {
+    Write-Host 'GAGAL mengaktifkan AutoStart:' -ForegroundColor Red
+    Write-Host "  $serverError"
+    Write-Host "  Cara manual: tekan tombol Windows + R, ketik  shell:startup  lalu Enter,"
+    Write-Host '  kemudian salin shortcut Mulai.bat ke folder yang terbuka.'
+} else {
+    Write-Host 'AutoStart AKTIF. Server menyala otomatis saat laptop dinyalakan dan masuk ke Windows.'
+    Write-Host "  Lokasi: $serverLink"
+}
+
+Write-Host ''
+if ($desktopError) {
+    Write-Host 'GAGAL membuat ikon di Desktop:' -ForegroundColor Red
+    Write-Host "  $desktopError"
+    Write-Host '  Cara manual: klik kanan file Mulai.bat > Send to > Desktop (create shortcut).'
+} else {
+    Write-Host 'Ikon "Marsha Beef" dibuat di Desktop.'
+    Write-Host "  Lokasi: $desktopLink"
+}

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\AccessPin;
 use App\Support\PinSession;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -15,16 +16,16 @@ class PinController extends Controller
 
     public function show(Request $request): View|RedirectResponse
     {
-        $pin = (string) config('access.pin');
+        $configured = AccessPin::isConfigured();
         $production = app()->environment('production');
 
-        if ($pin !== '' && PinSession::active($request->session())) {
+        if ($configured && PinSession::active($request->session())) {
             return redirect()->route('labels.create');
         }
 
         return view('welcome', [
-            'pinEnabled' => $pin !== '' || $production,
-            'misconfigured' => $pin === '' && $production,
+            'pinEnabled' => $configured || $production,
+            'misconfigured' => ! $configured && $production,
         ]);
     }
 
@@ -40,13 +41,11 @@ class PinController extends Controller
 
         $request->validate(['pin' => 'required|string|max:64']);
 
-        $pin = (string) config('access.pin');
-
-        if ($pin === '') {
+        if (! AccessPin::isConfigured()) {
             return redirect()->route('login')->withErrors(['pin' => 'PIN belum diatur. Isi APP_PIN di file .env.']);
         }
 
-        if (! hash_equals($pin, (string) $request->input('pin'))) {
+        if (! AccessPin::verify((string) $request->input('pin'))) {
             RateLimiter::hit($key, 60);
 
             return redirect()->route('login')->withErrors(['pin' => 'PIN salah.']);

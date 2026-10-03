@@ -7,6 +7,11 @@ rem Jika server sudah menyala, cukup buka aplikasinya.
 powershell -NoProfile -Command "if (Get-NetTCPConnection -LocalPort 8000 -State Listen -ErrorAction SilentlyContinue) { exit 0 } else { exit 1 }"
 if not errorlevel 1 goto siap
 
+rem Terapkan pembaruan struktur database jika ada (aman, tidak menghapus data).
+set "PHP=%~dp0php\php.exe"
+if not exist "%PHP%" set "PHP=php"
+"%PHP%" artisan migrate --force >nul 2>&1
+
 rem Nyalakan server di latar belakang (tanpa jendela).
 wscript //nologo "%~dp0tools\jalankan-server.vbs"
 

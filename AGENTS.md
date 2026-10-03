@@ -30,6 +30,9 @@ pemilik. Filament, Livewire, dan Laravel Boost sudah diputuskan **tidak dipakai*
   di balik middleware `pin` (`RequirePin`, PIN dari `APP_PIN`; kosong di production = aplikasi terkunci).
   PIN benar selalu menuju `/labels/create`. Kunci otomatis setelah `APP_IDLE_MINUTES` tanpa aktivitas:
   server memeriksa lewat `PinSession`, browser lewat `resources/js/idle-lock.js` (`/keepalive`, `/lock`).
+- PIN dikelola `App\Support\AccessPin`: hash di tabel `settings` (diganti lewat halaman `/pin`,
+  `PinSettingsController`) mengalahkan `APP_PIN` di `.env` (PIN awal). Jangan membaca `config('access.pin')`
+  langsung untuk keputusan akses; pakai `AccessPin::isConfigured()` / `verify()`. `app:reset-pin` untuk darurat.
 - Nama barang dan nama suhu dipaksa huruf besar: `data-uppercase` di input (`resources/js/uppercase.js`)
   dan `mb_strtoupper` di controller **sebelum** validasi unique.
 - `phpunit.xml` mengosongkan `APP_PIN` agar tes tidak terpengaruh isi `.env` lokal.
