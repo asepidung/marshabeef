@@ -9,11 +9,43 @@ barcode CODE128, riwayat cetak, PIN akses, dan PWA (bisa di-install dari Chrome/
 
 ## Kebutuhan
 
-- PHP 8.3 atau lebih baru dengan ekstensi `pdo_sqlite`, `sqlite3`, `mbstring`, `gd` (Laragon sudah lengkap)
+- PHP 8.3 atau lebih baru dengan ekstensi `pdo_sqlite`, `sqlite3`, `mbstring`, `openssl`, `fileinfo` (Laragon sudah lengkap)
 - Composer (hanya untuk instalasi pertama)
 - Node.js **tidak diperlukan** untuk menjalankan aplikasi. Hasil build aset sudah ada di `public/build`.
 
-## Instalasi di PC pabrik
+## Paket siap pakai untuk laptop pabrik (disarankan)
+
+Cara paling mudah: buat satu folder berisi aplikasi, PHP portabel, dan skrip pengelola. Laptop tujuan
+**tidak perlu memasang apa pun** (tanpa XAMPP, Laragon, Composer, atau internet).
+
+Di PC pengembang (setelah `npm run build` dan tes hijau):
+
+```bash
+powershell -ExecutionPolicy Bypass -File deploy\buat-paket.ps1
+```
+
+Opsi: `-Output E:\MarshaBeef` (lokasi hasil, bawaan `D:\WebApps\MarshaBeef-Paket`), `-Pin 482913`
+(PIN awal, bawaan 5585), `-Php <folder PHP>` (bawaan PHP Laragon).
+
+Hasilnya sekitar 116 MB: database **kosong**, `.env` production dengan `APP_KEY` baru, tanpa `Docs/`,
+`.git`, `node_modules`, dan tes. Salin seluruh folder itu ke flashdisk lalu ke laptop tujuan. Operator
+cukup membaca `BACA-DULU.txt` di dalamnya:
+
+| File | Fungsi |
+|---|---|
+| `Mulai.bat` | Menyalakan server di latar belakang lalu membuka aplikasi di browser |
+| `Aktifkan-AutoStart.bat` | Sekali klik: server menyala otomatis saat laptop dinyalakan, plus ikon di Desktop |
+| `Matikan-AutoStart.bat` | Membatalkan autostart |
+| `Ganti-PIN.bat` | Mengganti PIN (langsung berlaku) |
+| `Hentikan.bat` | Mematikan server (hanya milik paket ini) |
+
+Catatan:
+- Server bawaan PHP di Windows berjalan satu proses (`PHP_CLI_SERVER_WORKERS` tidak didukung di
+  Windows). Cukup untuk satu sampai beberapa operator; untuk beban berat gunakan Apache atau nginx.
+- `php.ini` paket dibuat otomatis dengan jalur relatif. Jangan menyalin `php.ini` Laragon (berisi alamat `D:/laragon/...`).
+- Ukuran kertas printer diatur di Windows pada setiap laptop (lihat `BACA-DULU.txt`).
+
+## Instalasi manual di PC pabrik (alternatif)
 
 ```bash
 composer install --no-dev --optimize-autoloader

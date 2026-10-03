@@ -17,6 +17,12 @@ pemilik. Filament, Livewire, dan Laravel Boost sudah diputuskan **tidak dipakai*
   Wajib build ulang setiap mengubah class Tailwind, CSS, atau JS.
 - Jalankan: `php artisan serve`
 - Backup database: `php artisan app:backup-db`
+- Paket untuk laptop pabrik: `powershell -ExecutionPolicy Bypass -File deploy\buat-paket.ps1`. Skrip
+  operator (`*.bat`, `tools\`, `BACA-DULU.txt`) ada di `deploy/` dan hanya boleh berisi karakter ASCII.
+  Uji paket dari folder lain dengan PATH tanpa PHP Laragon, dan jangan menyentuh folder Startup asli
+  (pakai `MARSHA_STARTUP_DIR` / `MARSHA_DESKTOP_DIR`).
+- Zona waktu aplikasi `Asia/Jakarta` (`APP_TIMEZONE`); jangan kembalikan ke UTC (jam riwayat dan
+  tanggal produksi bawaan jadi salah).
 
 ## Arsitektur
 

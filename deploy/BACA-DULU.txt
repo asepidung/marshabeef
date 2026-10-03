@@ -1,0 +1,88 @@
+MARSHA BEEF - APLIKASI CETAK LABEL
+===================================
+
+Aplikasi ini berjalan langsung dari folder ini. Tidak perlu instalasi apa pun
+dan tidak memerlukan internet.
+
+
+CARA MEMAKAI SEHARI-HARI
+------------------------
+1. Klik dua kali ikon "Marsha Beef" di Desktop (atau file Mulai.bat).
+2. Browser terbuka. Masukkan PIN, lalu aplikasi langsung masuk ke halaman cetak label.
+3. Jika tidak ada klik atau keyboard selama 30 menit, aplikasi terkunci
+   dan meminta PIN lagi.
+
+
+AGAR MENYALA OTOMATIS SAAT LAPTOP DINYALAKAN
+--------------------------------------------
+Lakukan SEKALI SAJA: klik dua kali  Aktifkan-AutoStart.bat
+
+Setelah itu server menyala sendiri di latar belakang setiap kali laptop
+dinyalakan dan masuk ke Windows. Operator cukup klik ikon "Marsha Beef"
+di Desktop untuk membuka aplikasi.
+
+Untuk membatalkan: klik dua kali  Matikan-AutoStart.bat
+
+
+MENGGANTI PIN
+-------------
+Klik dua kali  Ganti-PIN.bat , lalu ikuti petunjuknya (PIN 4 sampai 12 angka).
+PIN baru langsung berlaku.
+
+
+MENGHENTIKAN APLIKASI
+---------------------
+Klik dua kali  Hentikan.bat
+(Biasanya tidak perlu. Server boleh dibiarkan menyala terus.)
+
+
+PENGATURAN PRINTER (dilakukan SEKALI di setiap laptop)
+-----------------------------------------------------
+Ukuran kertas diatur di printer/Windows, bukan di aplikasi, jadi setiap laptop
+harus diatur sendiri. Aplikasi meminta halaman 100 x 75 mm.
+
+A. Pasang driver printer label di laptop (printer "CB 2ND", model MHT-L1081,
+   203 dpi), lalu jadikan printer bawaan (Default).
+
+B. Windows: Settings > Printers & scanners > CB 2ND > Printing preferences:
+     Paper Name : LABEL SWM  (klik Manage untuk membuatnya)
+       - Paper Width  : 75.0 mm
+       - Paper Length : 100.0 mm
+     Rotate     : 90
+     Offset     : Horizon 0.0 mm, Vertical 0.0 mm
+   Pilih LABEL SWM sebagai kertas bawaan, lalu klik OK.
+
+C. Saat jendela Print muncul di browser, pastikan:
+     Printer        : CB 2ND
+     Margins        : None
+     Scale          : 100 (bukan "Fit to page")
+     Headers and footers : tidak dicentang
+   Browser mengingat pilihan ini untuk cetak berikutnya.
+
+D. Cetak SATU label percobaan. Periksa: tidak terpotong, tidak terputar, dan
+   barcode terbaca. Jika terputar atau bergeser, ubah Rotate (0 / 90 / 180 / 270)
+   atau Offset di langkah B lalu coba lagi.
+
+
+DATA ADA DI MANA
+----------------
+Semua data (barang, suhu, riwayat label) tersimpan di satu file:
+    database\database.sqlite
+
+BACKUP (disarankan rutin, misalnya tiap hari):
+Salin file database\database.sqlite ke flashdisk SAAT SERVER DIHENTIKAN
+(klik Hentikan.bat dulu), atau gunakan perintah backup di README.md.
+
+JANGAN menghapus atau memindahkan folder "php", "vendor", dan "database".
+
+
+JIKA BERMASALAH
+---------------
+- Halaman tidak mau terbuka:
+  1. Klik Hentikan.bat, tunggu 5 detik, lalu klik Mulai.bat lagi.
+  2. Pastikan alamatnya  http://127.0.0.1:8000
+  3. Jika muncul pesan "port 8000 dipakai", ada aplikasi lain yang memakai
+     port tersebut. Tutup aplikasi itu atau restart laptop.
+- Muncul tulisan "PIN belum diatur": buka Ganti-PIN.bat lalu isi PIN.
+- Lupa PIN: klik Ganti-PIN.bat (tidak perlu PIN lama).
+- Jam di riwayat tidak sesuai: periksa jam dan zona waktu Windows (WIB).
