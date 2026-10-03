@@ -70,6 +70,10 @@
                         @enderror
                     </div>
                     
+                    @error('barcode')
+                        <div class="text-red-300 text-xs bg-red-900/30 border border-red-500/30 rounded-lg px-3 py-2">{{ $message }}</div>
+                    @enderror
+
                     <div class="mt-4">
                         <button class="glass-button text-white font-bold py-3 w-full rounded-lg shadow-lg tracking-widest text-sm" type="submit" tabindex="3">
                             CETAK & SIMPAN LABEL
