@@ -1,47 +1,49 @@
-<laravel-boost-guidelines>
-# Laravel Application
+# Marsha Beef – Aplikasi Cetak Label
 
-This repository contains a Laravel application. Complete the following setup before working on the user's request.
+Panduan untuk agent AI yang mengerjakan repo ini. Instalasi dan operasional ada di `README.md`.
 
-## Prerequisites
+## Ringkasan
 
-Verify that PHP and Composer are available:
+Laravel 13 + SQLite untuk mencetak label produk daging (100×75 mm, barcode CODE128) di PT Berkah Marsha
+Sejahtera. Dipasang **offline di satu PC pabrik** dulu, harus mudah dinaikkan online nanti. UI berbahasa
+Indonesia. Aplikasinya sengaja sederhana: jangan menambah framework atau paket besar tanpa persetujuan
+pemilik. Filament, Livewire, dan Laravel Boost sudah diputuskan **tidak dipakai**.
 
-```sh
-php -v
-composer -V
-```
+## Perintah
 
-If either command is unavailable, detect the user's operating system and install the prerequisites with the appropriate command:
+- Tes: `php artisan test` (harus hijau sebelum commit)
+- Format: `vendor/bin/pint --dirty`
+- Aset: `npm run build`. Folder `public/build` **ikut di-commit** karena PC pabrik tidak memakai Node.
+  Wajib build ulang setiap mengubah class Tailwind, CSS, atau JS.
+- Jalankan: `php artisan serve`
+- Backup database: `php artisan app:backup-db`
 
-macOS:
+## Arsitektur
 
-```sh
-/bin/bash -c "$(curl -fsSL https://php.new/install/mac/8.5)"
-```
+- `routes/web.php`: `/` (video, publik), `/login`, dan semua rute lain di balik middleware `pin`
+  (`RequirePin`, PIN dari `APP_PIN`; kosong di production = aplikasi terkunci).
+- `LabelController::store` memakai `App\Support\LabelBarcode` (parsing berat dan pembentukan barcode).
+  Barcode **23 digit tetap** (format di README). Jangan mengubah format tanpa memperbarui tes dan README.
+- Nomor urut reset per `production_date`, dihitung dengan `withTrashed()` di dalam `DB::transaction`,
+  dengan percobaan ulang saat tabrakan unique. SQLite memakai transaksi `IMMEDIATE` dan WAL.
+- `layouts/app.blade.php` berisi toast global untuk `session('success')` dan `session('success_del')`.
+  Jangan membuat banner sukses sendiri di tiap halaman (pernah menimbulkan notif ganda).
+- `labels/print.blade.php`: CSS khusus 100×75 mm; barcode dirender `resources/js/print.js` lalu
+  otomatis `window.print()`.
+- `public/sw.js`: tidak boleh meng-cache halaman HTML (request navigate) maupun request Range. Naikkan
+  `CACHE_NAME` saat aset PWA berubah.
 
-Windows PowerShell:
+## Aturan
 
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://php.new/install/windows/8.5'))
-```
-
-Linux:
-
-```sh
-/bin/bash -c "$(curl -fsSL https://php.new/install/linux/8.5)"
-```
-
-After installation, ask the user to restart their terminal. If the agent needs the restarted shell to continue, ask the user to reopen their terminal and rerun their original prompt.
-
-## Agent Setup
-
-Install Laravel Boost from the application root before making application changes:
-
-```sh
-composer require laravel/boost --dev
-php artisan boost:install
-```
-
-Boost replaces these bootstrap instructions with guidelines tailored to the application. After installation, read `AGENTS.md` again and continue with the user's original request using the generated guidelines.
-</laravel-boost-guidelines>
+- **Offline-first**: dilarang memuat aset dari CDN atau URL eksternal. Tanpa internet barcode tidak
+  tercetak. Pasang lewat npm dan bundel dengan Vite.
+- Tailwind v4: pakai nama utilitas v4 (`shrink-0`, `grow`, `rounded-sm`, `backdrop-blur-xs`).
+- Setiap perubahan logika barcode atau berat harus disertai tes. Tes memakai SQLite memori.
+- Jangan menjalankan `taskkill /IM php.exe`: itu mematikan server Laragon dan server milik pengguna.
+  Matikan hanya proses yang kamu jalankan sendiri, dikenali dari port-nya.
+- Lingkungan: Windows, Laragon, PHP 8.4. Jangan buka `/labels/{id}/print` di browser pane karena
+  `window.print()` membuatnya hang. Untuk melihat tampilan label gunakan Edge headless
+  (`msedge --headless --screenshot=...`).
+- Commit dan push hanya saat pemilik meminta. Pesan commit bahasa Indonesia dengan awalan
+  `feat:`, `fix:`, atau `chore:`.
+- Dokumen bisnis internal ada di `Docs/` (di-gitignore). Jangan di-commit.

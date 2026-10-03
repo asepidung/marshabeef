@@ -33,7 +33,8 @@ Lalu buka file `.env` dan isi:
 | `APP_DEBUG` | `false` (sudah bawaan) |
 
 Jika PC pabrik tidak punya internet saat instalasi, jalankan `composer install` di PC lain lalu salin
-seluruh folder proyek (termasuk `vendor`) ke PC pabrik.
+seluruh folder proyek (termasuk `vendor`) ke PC pabrik, kemudian jalankan `php artisan optimize:clear`
+di PC pabrik. Langkah terakhir itu wajib: tanpa ini cache view dari PC asal bisa membuat halaman error.
 
 ### Menjalankan
 
