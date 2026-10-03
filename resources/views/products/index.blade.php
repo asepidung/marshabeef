@@ -8,7 +8,7 @@
             <h2 class="text-xl font-bold text-white mb-6 border-b border-white/20 pb-3">Tambah Barang Baru</h2>
             
             @if($errors->any())
-                <div class="bg-red-500/20 border-l-4 border-red-500 p-3 mb-4 rounded">
+                <div class="bg-red-500/20 border-l-4 border-red-500 p-3 mb-4 rounded-sm">
                     <ul class="list-disc list-inside text-xs text-red-200">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -40,7 +40,7 @@
         <div class="glass-panel rounded-2xl overflow-hidden">
             <div class="px-6 py-5 border-b border-white/20 flex justify-between items-center bg-white/5">
                 <h2 class="text-xl font-bold text-white">Daftar Barang</h2>
-                <span class="bg-white/20 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full border border-white/30">{{ $products->count() }} Total</span>
+                <span class="bg-white/20 backdrop-blur-xs text-white text-xs font-bold px-3 py-1 rounded-full border border-white/30">{{ $products->count() }} Total</span>
             </div>
             
             <div class="overflow-x-auto">

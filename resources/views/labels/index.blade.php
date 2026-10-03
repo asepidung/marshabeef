@@ -4,7 +4,7 @@
 <div class="glass-panel rounded-2xl overflow-hidden">
     <div class="px-6 py-5 border-b border-white/20 flex justify-between items-center bg-white/5">
         <h2 class="text-xl font-bold text-white tracking-wide">Riwayat Cetak Label</h2>
-        <span class="bg-white/20 backdrop-blur-sm text-white text-xs font-bold px-3 py-1.5 rounded-full border border-white/30">{{ $labels->total() }} Total</span>
+        <span class="bg-white/20 backdrop-blur-xs text-white text-xs font-bold px-3 py-1.5 rounded-full border border-white/30">{{ $labels->total() }} Total</span>
     </div>
     
     <div class="overflow-x-auto">

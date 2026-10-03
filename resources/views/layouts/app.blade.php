@@ -12,11 +12,8 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Marsha Beef">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-        
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #020617 100%);
@@ -189,11 +186,11 @@
         @endunless
     </nav>
     
-    <main class="flex-grow w-full max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <main class="grow w-full max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         @yield('content')
     </main>
     
-    <footer class="py-6 mt-auto border-t border-white/10 bg-[#0f172a]/50 backdrop-blur-sm">
+    <footer class="py-6 mt-auto border-t border-white/10 bg-[#0f172a]/50 backdrop-blur-xs">
         <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-white/70 text-sm font-light">
             <div class="mb-3 md:mb-0 font-medium">
                 &copy; {{ date('Y') }} PT Berkah Marsha Sejahtera

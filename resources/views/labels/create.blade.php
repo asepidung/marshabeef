@@ -52,7 +52,7 @@
                     <!-- Expired Checkbox -->
                     <div class="group">
                         <label class="flex items-center space-x-3 cursor-pointer p-2 px-1 transition-all duration-300">
-                            <input type="checkbox" name="use_expired" value="1" {{ old('use_expired', session('last_use_expired')) ? 'checked' : '' }} class="w-4 h-4 text-pink-500 rounded border-white/20 bg-black/30 focus:ring-pink-500 focus:ring-offset-gray-900" tabindex="-1">
+                            <input type="checkbox" name="use_expired" value="1" {{ old('use_expired', session('last_use_expired')) ? 'checked' : '' }} class="w-4 h-4 text-pink-500 rounded-sm border-white/20 bg-black/30 focus:ring-pink-500 focus:ring-offset-gray-900" tabindex="-1">
                             <span class="text-white/90 font-semibold tracking-wide text-xs">Pakai Expired</span>
                         </label>
                     </div>
@@ -96,7 +96,7 @@
                 </div>
             </div>
             
-            <div class="overflow-x-auto flex-grow">
+            <div class="overflow-x-auto grow">
                 <table class="w-full text-left glass-table whitespace-nowrap">
                     <thead>
                         <tr class="text-white/60 text-[10px] uppercase tracking-wider font-semibold border-b border-white/10 bg-white/5">
@@ -112,7 +112,7 @@
                     <tbody class="divide-y divide-white/5">
                         @forelse($labels as $label)
                             <tr class="text-xs {{ $label->trashed() ? 'opacity-40 grayscale pointer-events-none' : 'hover:bg-white/5' }} transition-colors">
-                                <td class="px-4 py-2 font-bold tracking-wider {{ $label->trashed() ? 'text-white/50 line-through' : 'text-white drop-shadow' }}">
+                                <td class="px-4 py-2 font-bold tracking-wider {{ $label->trashed() ? 'text-white/50 line-through' : 'text-white drop-shadow-sm' }}">
                                     {{ $label->barcode }}
                                 </td>
                                 <td class="px-4 py-2 font-bold {{ $label->trashed() ? 'text-yellow-400/50' : 'text-yellow-400' }}">
@@ -142,7 +142,7 @@
                                             </button>
                                         </form>
                                     @else
-                                        <span class="text-[9px] text-red-300 font-bold px-1.5 py-0.5 border border-red-500/30 bg-red-900/30 rounded uppercase tracking-wider">Dihapus</span>
+                                        <span class="text-[9px] text-red-300 font-bold px-1.5 py-0.5 border border-red-500/30 bg-red-900/30 rounded-sm uppercase tracking-wider">Dihapus</span>
                                     @endif
                                 </td>
                             </tr>

@@ -1,14 +1,10 @@
-const CACHE_NAME = 'marsha-beef-v6';
+const CACHE_NAME = 'marsha-beef-v7';
 const urlsToCache = [
   '/img/logo.png',
   '/img/icons/icon-192.png',
   '/img/icons/icon-512.png',
   '/img/halal.png',
-  '/manifest.json',
-  'https://cdn.tailwindcss.com',
-  'https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js',
-  'https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js',
-  'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap'
+  '/manifest.json'
 ];
 
 self.addEventListener('install', event => {

@@ -16,12 +16,12 @@
             @csrf
             <input type="text" name="name" placeholder="Nama Suhu (cth: CHILL)" required class="glass-input rounded-full px-5 py-2.5 text-sm focus:outline-none w-full sm:w-56 transition-all tracking-wide">
             
-            <div class="relative w-full sm:w-40 flex-shrink-0">
+            <div class="relative w-full sm:w-40 shrink-0">
                 <input type="number" name="expired_in_days" placeholder="Lama Simpan" min="1" max="999" required class="glass-input rounded-full pl-5 pr-14 py-2.5 text-sm focus:outline-none w-full transition-all">
                 <span class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/50 text-xs font-bold tracking-widest">Hari</span>
             </div>
             
-            <button type="submit" class="glass-button px-6 py-2.5 rounded-full text-white font-bold text-sm tracking-wide shadow-lg whitespace-nowrap flex items-center justify-center flex-shrink-0">
+            <button type="submit" class="glass-button px-6 py-2.5 rounded-full text-white font-bold text-sm tracking-wide shadow-lg whitespace-nowrap flex items-center justify-center shrink-0">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
                 Tambah
             </button>
@@ -31,7 +31,7 @@
     @if($errors->any())
         <div class="bg-red-500/20 border-l-4 border-red-500 p-4 m-6 mb-0 rounded-r-lg">
             <div class="flex">
-                <div class="flex-shrink-0">
+                <div class="shrink-0">
                     <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
                 </div>
                 <div class="ml-3">
@@ -45,7 +45,7 @@
         </div>
     @endif
 
-    <div class="flex-grow overflow-auto p-6 md:p-8 relative z-10">
+    <div class="grow overflow-auto p-6 md:p-8 relative z-10">
         <table class="w-full text-left glass-table whitespace-nowrap">
             <thead>
                 <tr class="text-white/50 text-xs uppercase tracking-widest font-bold border-b border-white/10">
@@ -60,7 +60,7 @@
                     <tr x-data="{ editing: false, editName: '{{ $type->name }}', editDays: '{{ $type->expired_in_days }}' }" class="hover:bg-white/5 transition-colors group">
                         <td class="px-6 py-4">
                             <!-- Tampilan Biasa -->
-                            <span x-show="!editing" class="font-bold text-base text-white drop-shadow tracking-widest uppercase">{{ $type->name }}</span>
+                            <span x-show="!editing" class="font-bold text-base text-white drop-shadow-sm tracking-widest uppercase">{{ $type->name }}</span>
                             <!-- Form Edit -->
                             <input x-show="editing" type="text" x-model="editName" form="edit-form-{{ $type->id }}" name="name" class="glass-input rounded-full px-4 py-1.5 text-sm w-full sm:w-48 font-bold tracking-widest uppercase" required x-cloak>
                         </td>

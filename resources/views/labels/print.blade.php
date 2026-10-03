@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cetak Label CV Amanda</title>
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+    @vite('resources/js/print.js')
     <style>
         * { 
             box-sizing: border-box; 
@@ -250,26 +250,10 @@
         
         <!-- Barcode -->
         <div class="barcode-area">
-            <svg id="barcode" class="barcode-svg"></svg>
+            <svg id="barcode" class="barcode-svg" data-value="{{ $label->barcode }}"></svg>
             <div class="barcode-text">{{ $label->barcode }}</div>
         </div>
     </div>
 
-    <script>
-        JsBarcode("#barcode", "{{ $label->barcode }}", {
-            format: "CODE128",
-            width: 2.2,
-            height: 38,
-            displayValue: false,
-            margin: 0
-        });
-
-        window.onload = function() {
-            window.print();
-            setTimeout(function() {
-                window.close();
-            }, 500);
-        };
-    </script>
 </body>
 </html>
