@@ -144,11 +144,18 @@
                     </a>
                 </div>
                 
+                @unless(View::hasSection('hide_nav'))
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-baseline space-x-2">
                     <a href="{{ route('labels.create') }}" class="text-white hover:bg-white/20 px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300">Cetak Label</a>
                     <a href="{{ route('products.index') }}" class="text-white hover:bg-white/20 px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300">Master Barang</a>
                     <a href="{{ route('types.index') }}" class="text-white hover:bg-white/20 px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300">Master Suhu</a>
+                    @if(config('access.pin'))
+                    <form action="{{ route('logout') }}" method="POST" class="inline">
+                        @csrf
+                        <button type="submit" class="text-white/70 hover:text-white hover:bg-white/20 px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300">Keluar</button>
+                    </form>
+                    @endif
                 </div>
 
                 <!-- Hamburger Button -->
@@ -160,17 +167,26 @@
                         </svg>
                     </button>
                 </div>
+                @endunless
             </div>
         </div>
 
+        @unless(View::hasSection('hide_nav'))
         <!-- Mobile Menu -->
         <div x-show="mobileMenuOpen" class="md:hidden bg-[#0f172a]/95 backdrop-blur-xl border-t border-white/10" style="display: none;" x-transition>
             <div class="px-4 pt-2 pb-4 space-y-2 shadow-xl">
                 <a href="{{ route('labels.create') }}" class="text-white block px-4 py-3 rounded-lg text-base font-medium bg-white/5 hover:bg-white/10 border border-white/5">Cetak Label</a>
                 <a href="{{ route('products.index') }}" class="text-white block px-4 py-3 rounded-lg text-base font-medium bg-white/5 hover:bg-white/10 border border-white/5">Master Barang</a>
                 <a href="{{ route('types.index') }}" class="text-white block px-4 py-3 rounded-lg text-base font-medium bg-white/5 hover:bg-white/10 border border-white/5">Master Suhu</a>
+                @if(config('access.pin'))
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="text-white/70 block w-full text-left px-4 py-3 rounded-lg text-base font-medium bg-white/5 hover:bg-white/10 border border-white/5">Keluar</button>
+                </form>
+                @endif
             </div>
         </div>
+        @endunless
     </nav>
     
     <main class="flex-grow w-full max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
