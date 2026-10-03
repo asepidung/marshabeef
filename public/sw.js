@@ -1,6 +1,8 @@
-const CACHE_NAME = 'marsha-beef-v4';
+const CACHE_NAME = 'marsha-beef-v6';
 const urlsToCache = [
   '/img/logo.png',
+  '/img/icons/icon-192.png',
+  '/img/icons/icon-512.png',
   '/img/halal.png',
   '/manifest.json',
   'https://cdn.tailwindcss.com',
@@ -36,6 +38,8 @@ self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
   // Halaman HTML bersifat dinamis (flash session, auto-print) - jangan pernah dari cache
   if (event.request.mode === 'navigate') return;
+  // Video/media memakai Range request (respons 206) - tidak bisa di-cache, biarkan browser yang urus
+  if (event.request.headers.has('range')) return;
   event.respondWith(
     fetch(event.request)
       .then(response => {
