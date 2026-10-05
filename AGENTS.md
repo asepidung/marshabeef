@@ -21,6 +21,13 @@ pemilik. Filament, Livewire, dan Laravel Boost sudah diputuskan **tidak dipakai*
   operator (`*.bat`, `tools\`, `BACA-DULU.txt`) ada di `deploy/` dan hanya boleh berisi karakter ASCII.
   Uji paket dari folder lain dengan PATH tanpa PHP Laragon, dan jangan menyentuh folder Startup asli
   (pakai `MARSHA_STARTUP_DIR` / `MARSHA_DESKTOP_DIR`).
+- Server paket dijalankan `php -S` langsung oleh `deploy/tools/jalankan-server.vbs` (folder kerja HARUS
+  `public`, router `server.php` mencari `index.php` di folder kerja). Jangan kembali ke `artisan serve`
+  (dua proses, lebih lambat). Buka aplikasi selalu lewat `127.0.0.1`, jangan `localhost` (lambat 0,3-2 detik).
+- OPcache di paket: dua salinan `php.exe` berbeda bersamaan memicu galat fatal ASLR. Semua pemanggil `php`
+  paket (`Mulai.bat`, vbs, `Reset-PIN-Darurat.bat`, `buat-paket.ps1`) harus mengisi `MARSHA_OPCACHE_DIR`
+  (dipakai `opcache.file_cache` + `file_cache_fallback` di `php.ini`). Saat mengukur performa, pastikan
+  status HTTP tiap request 200 (galat 500 terlihat "cepat") dan tidak ada PHP lain yang sedang jalan.
 - Zona waktu aplikasi `Asia/Jakarta` (`APP_TIMEZONE`); jangan kembalikan ke UTC (jam riwayat dan
   tanggal produksi bawaan jadi salah).
 

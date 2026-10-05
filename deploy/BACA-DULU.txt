@@ -8,6 +8,9 @@ dan tidak memerlukan internet.
 CARA MEMAKAI SEHARI-HARI
 ------------------------
 1. Klik dua kali ikon "Marsha Beef" di Desktop (atau file Mulai.bat).
+   PENTING: selalu buka lewat ikon itu atau alamat  http://127.0.0.1:8000
+   JANGAN mengetik "localhost" di browser. Di Windows alamat localhost bisa
+   puluhan kali lebih lambat (setiap halaman tertahan 0,3 sampai 2 detik).
 2. Browser terbuka. Masukkan PIN, lalu aplikasi langsung masuk ke halaman cetak label.
 3. Jika tidak ada klik atau keyboard selama 30 menit, aplikasi terkunci
    dan meminta PIN lagi.

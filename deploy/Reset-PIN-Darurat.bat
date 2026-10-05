@@ -12,6 +12,10 @@ echo.
 choice /c YN /m "Lanjutkan"
 if errorlevel 2 exit /b 0
 
+rem Jaring pengaman OPcache (lihat php\php.ini).
+set "MARSHA_OPCACHE_DIR=%~dp0storage\framework\opcache"
+if not exist "%MARSHA_OPCACHE_DIR%" mkdir "%MARSHA_OPCACHE_DIR%"
+
 rem Buang cache config supaya APP_PIN terbaru di .env yang dipakai.
 "%PHP%" artisan config:clear >nul 2>&1
 "%PHP%" artisan app:reset-pin

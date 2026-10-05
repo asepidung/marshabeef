@@ -45,6 +45,26 @@ Catatan:
 - `php.ini` paket dibuat otomatis dengan jalur relatif. Jangan menyalin `php.ini` Laragon (berisi alamat `D:/laragon/...`).
 - Ukuran kertas printer diatur di Windows pada setiap laptop (lihat `BACA-DULU.txt`).
 
+### Kecepatan (hasil ukur di PC pengembang)
+
+Waktu respons per halaman (median, 25 ulangan): paket **32–48 ms**; PHP Laragon tanpa OPcache **190–285 ms**.
+Penyebab utamanya OPcache: tanpa itu setiap halaman mengompilasi ulang ratusan file framework, dan Windows
+lambat membaca file. Paket sudah menyalakannya di `php\php.ini`, menjalankan `artisan optimize` tiap
+`Mulai.bat`, dan memakai `php -S` langsung (satu proses, sekitar 25% lebih cepat daripada `artisan serve`).
+Aset `/build` disimpan service worker (cache-first), jadi tidak diunduh ulang tiap halaman.
+
+Dua jebakan yang sudah terukur:
+- **Selalu buka lewat `http://127.0.0.1:8000`, jangan `localhost`** (lihat di atas): sekitar 310 ms
+  versus 32 ms per request.
+- **Dua salinan `php.exe` berbeda tidak boleh memakai OPcache bersamaan di satu PC tanpa pengaman.**
+  OPcache memakai satu memori bersama per pengguna, dan proses kedua bisa mati dengan galat fatal
+  *"Opcode handlers are unusable due to ASLR"* (terjadi saat PHP Laragon dan PHP paket jalan bersamaan,
+  termasuk saat `buat-paket.ps1` dijalankan ketika server Laragon hidup). Paket sudah diberi pengaman
+  (`opcache.file_cache` + `opcache.file_cache_fallback` lewat variabel `MARSHA_OPCACHE_DIR` yang diisi
+  `Mulai.bat`, `jalankan-server.vbs`, `Reset-PIN-Darurat.bat`, dan builder). Dalam kondisi bentrok itu PHP
+  paket tetap jalan tetapi memakai cache berkas yang lebih lambat (sekitar 120–200 ms per halaman).
+- Port bisa diganti dengan variabel lingkungan `MARSHA_PORT` (bawaan 8000), mis. bila port 8000 dipakai aplikasi lain.
+
 ## Instalasi manual di PC pabrik (alternatif)
 
 ```bash
@@ -77,6 +97,10 @@ php artisan serve --host=127.0.0.1 --port=8000
 Buka `http://127.0.0.1:8000`. Agar otomatis menyala saat PC hidup, buat shortcut/Task Scheduler yang
 menjalankan perintah di atas dari folder proyek. Di Chrome atau Edge, klik ikon **Install** di address bar
 untuk memasangnya sebagai aplikasi.
+
+**Selalu buka lewat `http://127.0.0.1:8000`, jangan `localhost`.** Server hanya mendengarkan IPv4, sedangkan
+Windows mencoba IPv6 (`::1`) lebih dulu untuk `localhost`. Hasil ukur: sekitar 310 ms per request lewat
+`localhost` dibanding 32 ms lewat `127.0.0.1`, dengan lonjakan sampai 2 detik.
 
 Jika perlu diakses dari PC lain di jaringan kantor, ganti `--host=0.0.0.0`. Catatan: PWA hanya bisa
 di-install lewat `localhost` atau HTTPS, bukan lewat alamat IP biasa.
@@ -169,3 +193,8 @@ php artisan test
 
 Setelah mengubah CSS/JS atau class Tailwind di view, jalankan `npm run build` dan commit isi
 `public/build` karena PC pabrik tidak memakai Node.
+
+Tip server dev yang cepat di Windows: nyalakan OPcache di `php.ini` PHP Anda (`zend_extension=opcache`).
+Di Laragon ini membuat `php artisan serve` sekitar 2 kali lebih cepat. Bila muncul galat
+*"Opcode handlers are unusable due to ASLR"*, tambahkan juga `opcache.file_cache=<folder tulis>` dan
+`opcache.file_cache_fallback=1`, atau hentikan PHP lain yang sedang memakai OPcache.

@@ -56,7 +56,7 @@ Copy-Tree $repo $Output `
     ) `
     -ExcludeFiles @('.env', '*.sqlite', '*.sqlite-wal', '*.sqlite-shm', '*.log', '.phpunit.result.cache', 'phpunit.xml', 'package.json', 'package-lock.json', 'vite.config.js')
 
-foreach ($dir in @('storage\logs', 'storage\app\backups', 'storage\app\public', 'storage\framework\views', 'storage\framework\cache\data', 'storage\framework\sessions', 'bootstrap\cache')) {
+foreach ($dir in @('storage\logs', 'storage\app\backups', 'storage\app\public', 'storage\framework\views', 'storage\framework\cache\data', 'storage\framework\sessions', 'storage\framework\opcache', 'bootstrap\cache')) {
     New-Item -ItemType Directory -Path (Join-Path $Output $dir) -Force | Out-Null
 }
 
@@ -91,10 +91,17 @@ date.timezone = Asia/Jakarta
 memory_limit = 256M
 
 ; Kecepatan: tanpa OPcache setiap halaman mengompilasi ulang ratusan file PHP.
-; Server dijalankan lewat "php artisan serve" (CLI), jadi enable_cli wajib menyala.
+; Server dijalankan langsung lewat "php -S" (SAPI cli-server, memakai opcache.enable);
+; enable_cli menyala agar perintah artisan (migrate, optimize) juga memakainya.
 zend_extension = opcache
 opcache.enable = 1
 opcache.enable_cli = 1
+; Jaring pengaman: di sebagian PC Windows, memori bersama OPcache gagal dipakai dengan galat fatal
+; "Opcode handlers are unusable due to ASLR" sehingga PHP berhenti. Dengan cache berkas + fallback,
+; PHP beralih ke cache berkas dan tetap jalan. MARSHA_OPCACHE_DIR diisi oleh Mulai.bat dan
+; jalankan-server.vbs; bila kosong, cache berkas nonaktif.
+opcache.file_cache = "${MARSHA_OPCACHE_DIR}"
+opcache.file_cache_fallback = 1
 opcache.memory_consumption = 128
 opcache.interned_strings_buffer = 16
 opcache.max_accelerated_files = 20000
@@ -109,6 +116,12 @@ log_errors = On
 
 $phpExe = Join-Path $phpOut 'php.exe'
 
+# Jaring pengaman OPcache (lihat php.ini): tanpa ini, bila PHP lain di PC ini (mis. server Laragon) sedang
+# memakai memori bersama OPcache, php.exe paket bisa berhenti dengan galat fatal ASLR saat menjalankan artisan.
+$opcacheDir = Join-Path $Output 'storage\framework\opcache'
+New-Item -ItemType Directory -Path $opcacheDir -Force | Out-Null
+$env:MARSHA_OPCACHE_DIR = $opcacheDir
+
 Write-Host '[4/6] Menyiapkan .env production dan database kosong...'
 $envText = [IO.File]::ReadAllText((Join-Path $repo '.env.example'))
 $envText = [regex]::Replace($envText, '(?m)^APP_PIN=[^\r\n]*', "APP_PIN=$Pin")
@@ -120,7 +133,16 @@ try {
     Invoke-Native 'key:generate' { & $phpExe artisan key:generate --force --no-interaction | Out-Null }
     Invoke-Native 'migrate'      { & $phpExe artisan migrate --force --no-interaction | Out-Null }
     Invoke-Native 'optimize:clear' { & $phpExe artisan optimize:clear --no-interaction | Out-Null }
-} finally { Pop-Location }
+} finally {
+    Pop-Location
+    $env:MARSHA_OPCACHE_DIR = $null
+}
+
+# Cache berkas OPcache yang terbentuk saat build berisi kunci dengan path folder build, jadi tidak berguna
+# (dan makan puluhan MB) di laptop tujuan. Kosongkan; akan terbentuk lagi saat dipakai bila perlu.
+foreach ($item in Get-ChildItem $opcacheDir -Force) {
+    if ($item.PSIsContainer) { [IO.Directory]::Delete($item.FullName, $true) } else { [IO.File]::Delete($item.FullName) }
+}
 
 Write-Host '[5/6] Menyalin skrip pengelola...'
 Copy-Item (Join-Path $PSScriptRoot '*.bat') $Output
@@ -128,7 +150,7 @@ Copy-Item (Join-Path $PSScriptRoot 'BACA-DULU.txt') $Output
 Copy-Item (Join-Path $PSScriptRoot 'tools') (Join-Path $Output 'tools') -Recurse
 
 Write-Host '[6/6] Selesai.'
-$sizeMb = [math]::Round(((Get-ChildItem $Output -Recurse -File -Force | Measure-Object Length -Sum).Sum / 1MB), 0)
+$sizeMb = [math]::Round(((Get-ChildItem $Output -Recurse -File -Force -ErrorAction SilentlyContinue | Measure-Object Length -Sum).Sum / 1MB), 0)
 Write-Host ''
 Write-Host "Paket siap di: $Output  (sekitar $sizeMb MB)"
 Write-Host 'Salin SELURUH folder itu ke flashdisk, lalu ke laptop tujuan. Baca BACA-DULU.txt di dalamnya.'
