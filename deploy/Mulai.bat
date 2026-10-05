@@ -12,6 +12,10 @@ set "PHP=%~dp0php\php.exe"
 if not exist "%PHP%" set "PHP=php"
 "%PHP%" artisan migrate --force >nul 2>&1
 
+rem Cache config, route, dan view agar halaman lebih cepat. Dibuat ulang setiap server dinyalakan
+rem supaya perubahan .env ikut terbaca.
+"%PHP%" artisan optimize >nul 2>&1
+
 rem Nyalakan server di latar belakang (tanpa jendela).
 wscript //nologo "%~dp0tools\jalankan-server.vbs"
 

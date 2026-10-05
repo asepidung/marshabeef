@@ -12,6 +12,8 @@ echo.
 choice /c YN /m "Lanjutkan"
 if errorlevel 2 exit /b 0
 
+rem Buang cache config supaya APP_PIN terbaru di .env yang dipakai.
+"%PHP%" artisan config:clear >nul 2>&1
 "%PHP%" artisan app:reset-pin
 echo.
 pause

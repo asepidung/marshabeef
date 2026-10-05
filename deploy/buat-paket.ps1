@@ -89,6 +89,20 @@ extension=sqlite3
 
 date.timezone = Asia/Jakarta
 memory_limit = 256M
+
+; Kecepatan: tanpa OPcache setiap halaman mengompilasi ulang ratusan file PHP.
+; Server dijalankan lewat "php artisan serve" (CLI), jadi enable_cli wajib menyala.
+zend_extension = opcache
+opcache.enable = 1
+opcache.enable_cli = 1
+opcache.memory_consumption = 128
+opcache.interned_strings_buffer = 16
+opcache.max_accelerated_files = 20000
+opcache.validate_timestamps = 1
+opcache.revalidate_freq = 2
+; Windows lambat memeriksa jalur file; cache ini mengurangi akses disk per request.
+realpath_cache_size = 4096K
+realpath_cache_ttl = 600
 display_errors = Off
 log_errors = On
 '@ | Set-Content -Path (Join-Path $phpOut 'php.ini') -Encoding ascii
