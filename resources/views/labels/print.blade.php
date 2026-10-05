@@ -80,28 +80,27 @@
         
         /* Main Left Box */
         .main-box {
-            flex: 0 0 68%;
+            flex: 0 0 52%;
             position: relative;
             border-right: 2px solid #000;
             display: flex;
             flex-direction: column;
             padding: 2px 4px;
         }
+        .pcs-absolute {
+            position: absolute;
+            top: 3px;
+            right: 6px;
+            font-size: 15px;
+            font-weight: 900;
+        }
         .weight-block { margin: auto 0; }
         .weight-caption { font-size: 8px; font-weight: bold; letter-spacing: 1.5px; margin-bottom: 1px; }
         .weight-value { display: flex; align-items: baseline; }
-        .weight-num { font-size: 40px; font-weight: 900; letter-spacing: -1px; line-height: 1; }
+        .weight-num { font-size: 40px; font-weight: 900; letter-spacing: -1px; line-height: 1; white-space: nowrap; }
+        /* Berat 100 kg ke atas (6 karakter) dikecilkan agar muat di kotak. */
+        .weight-num.weight-num-long { font-size: 32px; }
         .weight-unit { font-size: 14px; font-weight: bold; margin-left: 2px; }
-        .pcs-badge {
-            margin-left: auto;
-            align-self: center;
-            border: 2px solid #000;
-            border-radius: 4px;
-            padding: 1px 6px;
-            font-size: 14px;
-            font-weight: 900;
-            white-space: nowrap;
-        }
 
         .dates-area {
             display: flex;
@@ -124,32 +123,24 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 4px 3px 3px;
-            gap: 3px;
+            justify-content: center;
+            gap: 6px;
+            padding: 4px 6px;
             min-width: 0;
         }
-        .halal-logo {
-            flex: 1;
-            min-height: 0;
-            width: 100%;
-            position: relative;
-        }
         .halal-img {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
+            display: block;
+            width: 92%;
+            height: auto;
+            min-height: 0;
         }
         .nkv {
-            width: 100%;
-            border-top: 1.5px solid #000;
-            padding-top: 2px;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
             text-align: center;
-            line-height: 1.1;
         }
-        .nkv-label { font-size: 7px; font-weight: bold; letter-spacing: 1.5px; }
-        .nkv-number { font-size: 9px; font-weight: 900; letter-spacing: 0.2px; white-space: nowrap; }
 
         /* Type Bar */
         .type-bar {
@@ -199,14 +190,14 @@
         <!-- Info Grid (Weight, Pcs, Dates) -->
         <div class="info-grid">
             <div class="main-box">
+                @if($label->qty_pcs > 0)
+                <div class="pcs-absolute">{{ $label->qty_pcs }} PCS</div>
+                @endif
                 <div class="weight-block">
                     <div class="weight-caption">NET WEIGHT</div>
                     <div class="weight-value">
-                        <span class="weight-num">{{ number_format($label->weight, 2) }}</span>
+                        <span class="weight-num {{ $label->weight >= 100 ? 'weight-num-long' : '' }}">{{ number_format($label->weight, 2) }}</span>
                         <span class="weight-unit">Kg</span>
-                        @if($label->qty_pcs > 0)
-                        <span class="pcs-badge">{{ $label->qty_pcs }} PCS</span>
-                        @endif
                     </div>
                 </div>
                 
@@ -225,13 +216,8 @@
             </div>
             
             <div class="halal-box">
-                <div class="halal-logo">
-                    <img src="{{ asset('img/halal.png') }}" class="halal-img" alt="Halal">
-                </div>
-                <div class="nkv">
-                    <div class="nkv-label">NKV</div>
-                    <div class="nkv-number">RPH-3276041-016</div>
-                </div>
+                <img src="{{ asset('img/halal.svg') }}" class="halal-img" alt="Halal Indonesia">
+                <div class="nkv">NKV RPH-3276041-016</div>
             </div>
         </div>
         

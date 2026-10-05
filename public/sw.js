@@ -1,9 +1,9 @@
-const CACHE_NAME = 'marsha-beef-v8';
+const CACHE_NAME = 'marsha-beef-v9';
 const urlsToCache = [
   '/img/logo.png',
   '/img/icons/icon-192.png',
   '/img/icons/icon-512.png',
-  '/img/halal.png',
+  '/img/halal.svg',
   '/manifest.json'
 ];
 
